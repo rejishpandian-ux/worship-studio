@@ -31,7 +31,7 @@ export function ThemeGallery({
     setFavorites(updated);
     try {
       localStorage.setItem("worship-favorites", JSON.stringify(updated));
-    } catch {}
+    } catch { }
   };
 
   const filteredThemes = THEMES.filter((t) => {
@@ -39,8 +39,8 @@ export function ThemeGallery({
       selectedCategory === "All"
         ? true
         : selectedCategory === "Favorites"
-        ? favorites.includes(t.id)
-        : t.category === selectedCategory;
+          ? favorites.includes(t.id)
+          : t.category === selectedCategory;
 
     const matchesSearch =
       t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -104,13 +104,13 @@ export function ThemeGallery({
 
           const cardBg = t.image
             ? {
-                backgroundImage: `url(${t.image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center"
-              }
+              backgroundImage: `url(${t.image})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center"
+            }
             : {
-                background: t.background
-              };
+              background: t.background
+            };
 
           return (
             <div
