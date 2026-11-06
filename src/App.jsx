@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Check } from "lucide-react";
+import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { Navigation } from "./components/Navigation.jsx";
 import { QuickMode } from "./components/QuickMode/QuickMode.jsx";
 import { HomeOverview } from "./components/Home/HomeOverview.jsx";
@@ -8,6 +9,8 @@ import { ThemeGallery } from "./components/Themes/ThemeGallery.jsx";
 import { ProjectLibrary } from "./components/Library/ProjectLibrary.jsx";
 import { SettingsView } from "./components/Settings/SettingsView.jsx";
 import { LivePresenter } from "./components/LivePresenter/LivePresenter.jsx";
+import { AuthModal } from "./components/Auth/AuthModal.jsx";
+import { ProfileModal } from "./components/Auth/ProfileModal.jsx";
 import {
   getAllProjects,
   saveProject,
@@ -15,7 +18,8 @@ import {
   createDefaultProject
 } from "./db/indexedDb.js";
 
-export default function App() {
+function WorshipStudioApp() {
+  const { user } = useAuth();
   const [currentView, setCurrentView] = useState("quick");
   const [darkMode, setDarkMode] = useState(() => {
     try {
@@ -31,6 +35,11 @@ export default function App() {
   const [presenting, setPresenting] = useState(false);
   const [presentingSlideIndex, setPresentingSlideIndex] = useState(0);
   const [toastMessage, setToastMessage] = useState(null);
+
+  // Auth Modals state
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalView, setAuthModalView] = useState("signin");
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   // Sync dark mode class
   useEffect(() => {
@@ -117,6 +126,11 @@ export default function App() {
     setPresenting(true);
   };
 
+  const handleOpenAuth = (view = "signin") => {
+    setAuthModalView(view);
+    setAuthModalOpen(true);
+  };
+
   return (
     <div className={`app ${!darkMode ? "light" : ""}`}>
       {/* Sidebar & Top Navigation */}
@@ -129,6 +143,9 @@ export default function App() {
         setMobileOpen={setMobileOpen}
         projectCount={projects.length}
         themeCount={28}
+        onOpenAuth={handleOpenAuth}
+        onOpenProfile={() => setProfileModalOpen(true)}
+        showToast={showToast}
       />
 
       {/* Main Content Area */}
@@ -211,6 +228,21 @@ export default function App() {
         />
       )}
 
+      {/* Authentication Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        initialView={authModalView}
+        showToast={showToast}
+      />
+
+      {/* Profile & Workspace Modal */}
+      <ProfileModal
+        isOpen={profileModalOpen}
+        onClose={() => setProfileModalOpen(false)}
+        showToast={showToast}
+      />
+
       {/* Toast Notification */}
       {toastMessage && (
         <div className="toast">
@@ -222,3 +254,10 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <AuthProvider>
+      <WorshipStudioApp />
+    </AuthProvider>
+  );
+}

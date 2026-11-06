@@ -11,6 +11,7 @@ import {
   fetchYouTubeTranscript
 } from "./services/youtubeService.js";
 import { formatLyricsWithAI } from "./services/aiLyricsService.js";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// Mount Authentication routes
+app.use("/api/auth", authRouter);
 
 // Serve static background assets
 app.use("/backgrounds", express.static(path.join(__dirname, "../public/backgrounds")));

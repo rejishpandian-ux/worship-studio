@@ -14,6 +14,7 @@ import {
   HelpCircle,
   ExternalLink
 } from "lucide-react";
+import { AccountDropdown } from "./Navigation/AccountDropdown.jsx";
 
 export function Navigation({
   currentView,
@@ -23,7 +24,10 @@ export function Navigation({
   mobileOpen,
   setMobileOpen,
   projectCount = 0,
-  themeCount = 28
+  themeCount = 28,
+  onOpenAuth,
+  onOpenProfile,
+  showToast
 }) {
   const navItems = [
     { id: "quick", label: "Quick Mode", icon: Sparkles, badge: "FAST" },
@@ -64,7 +68,7 @@ export function Navigation({
         <div className="mobile-scrim" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Sidebar */}
+      {/* Cleaned Left Sidebar: No workspace pill or user card */}
       <aside className={`sidebar ${mobileOpen ? "mobile-open" : ""}`}>
         <div className="brand">
           <div className="brand-mark">
@@ -83,12 +87,6 @@ export function Navigation({
           </button>
         </div>
 
-        <div className="workspace-pill">
-          <div className="avatar">W</div>
-          <span>Worship Team</span>
-          <ChevronRight size={14} className="nav-trail" />
-        </div>
-
         <div className="nav-label">PLATFORM</div>
         <nav>
           {navItems.map((item) => {
@@ -100,7 +98,7 @@ export function Navigation({
                 className={`nav-item ${isSelected ? "selected" : ""}`}
                 onClick={() => handleNavClick(item.id)}
               >
-                <Icon size={16} />
+                <Icon size={17} />
                 <span>{item.label}</span>
                 {item.badge && <em>{item.badge}</em>}
               </button>
@@ -124,19 +122,10 @@ export function Navigation({
               Start quick worship slide <ExternalLink size={10} />
             </button>
           </div>
-
-          <div className="user-card">
-            <div className="avatar user-avatar">A</div>
-            <div>
-              <b>Worship Team</b>
-              <small>Local Workspace</small>
-            </div>
-            <Settings size={14} />
-          </div>
         </div>
       </aside>
 
-      {/* Topbar */}
+      {/* Topbar with Account and Workspace dropdown positioned on top-right */}
       <header className="topbar">
         <button
           className="icon-btn menu-trigger"
@@ -167,12 +156,15 @@ export function Navigation({
             {darkMode ? <Sun size={17} /> : <Moon size={17} />}
           </button>
 
-          <button className="avatar top-avatar" aria-label="User profile">
-            A
-          </button>
+          {/* User Profile & Workspace Dropdown in Top-Right */}
+          <AccountDropdown
+            onOpenAuth={onOpenAuth}
+            onOpenProfile={onOpenProfile}
+            onOpenSettings={() => setCurrentView("settings")}
+            showToast={showToast}
+          />
         </div>
       </header>
     </>
   );
 }
-
