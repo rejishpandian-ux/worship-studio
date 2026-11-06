@@ -121,6 +121,11 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`[Worship Studio Server] Running on http://localhost:${PORT}`);
-});
+export default app;
+
+// Start the local server only outside Vercel
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`[Worship Studio Server] Running on http://localhost:${PORT}`);
+  });
+}
